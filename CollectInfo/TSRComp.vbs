@@ -30,6 +30,7 @@ wscript.echo strMac
 
 dim objConn
 strConn="Driver={SQL Server};Server=George-Acer;Database=TestData;"
+strConn2="Provider=SQLOLEDB;Data Source=George-Acer;Initial Catalog=TestData;Integrated Security=SSPI;"
 strSql="UPDATE ComputerInfo SET DNSHostname='" & strComputer & _
     "', DomainUser='" & strUser & _
     "', Memory='" & strMem & _
@@ -40,6 +41,6 @@ strSql="UPDATE ComputerInfo SET DNSHostname='" & strComputer & _
     "', LastCom=getdate()" & _
     " WHERE SerialNumber='" & strSN & "'"
 set objConn=createobject("ADODB.Connection")
-objConn.open strConn
+objConn.open strConn2
 objConn.execute strSql
 objConn.close
