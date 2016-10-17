@@ -6,41 +6,45 @@ set objWMISVC=getobject("winmgmts:\\"&strShortComputer&"\root\cimv2")
 set objSystem=objWMISVC.instancesof("win32_computersystem")
 For Each objSystem0 In objSystem
     strComputer=strComputer & objSystem0.dnshostname & ";"
-    strUser=strUser & objSystem0.username & ";"
+    strDomain=strDomain & objSystem0.domain & ";"
+    strModel=strModel & objSystem0.model & ";"
     strMem=strMem & objSystem0.totalphysicalmemory & ";"
 Next
-wscript.echo strComputer,strUser,strMem
+wscript.echo strComputer,strDomain,strModel,strMem
 
 set objProd=objWMISVC.instancesof("win32_computersystemproduct")
 For Each objProd0 In objProd
-    strModel=strModel & objProd0.name & ";"
-    strVersion=strVersion & objProd0.version & ";"
     strSN=strSN & objProd0.identifyingnumber & ";"
     strUUID=strUUID & objProd0.uuid & ";"
 Next
-wscript.echo strModel,strVersion,strSN,strUUID
+wscript.echo strSN,strUUID
 
 set objNet=objWMISVC.instancesof("win32_networkadapterconfiguration")
 For Each objNet0 In objNet
     if objNet0.ipenabled then
         strMac=strMac & objNet0.macaddress & ";"
+        For Each objIP0 In objNet0.ipaddress
+            strIP=strIP & objIP0 & ";"
+        Next
+        strNetDriver=strNetDriver & objNet0.servicename & ";"
     end if
 Next
-wscript.echo strMac
+wscript.echo strMac,strIP,strNetDriver
 
 dim objConn
 strConn="Driver={SQL Server};Server=George-Acer;Database=TestData;"
-strConn2="Provider=SQLOLEDB;Data Source=George-Acer;Initial Catalog=TestData;Integrated Security=SSPI;"
-strSql="UPDATE ComputerInfo SET DNSHostname='" & strComputer & _
-    "', DomainUser='" & strUser & _
-    "', Memory='" & strMem & _
+strConn2="Provider=SQLOLEDB;Data Source=[ServerNameOrIP];Initial Catalog=[Database];Uid=[User];Pwd=[Password];"
+strSqlMachine="UPDATE ComputerInfo SET DNSHostName='" & strComputer & _
+    "', Domain='" & strDomain & _
     "', Model='" & strModel & _
-    "', Version='" & strVersion & _
+    "', Memory='" & strMem & _
     "', UUID='" & strUUID & _
     "', MAC='" & strMac & _
-    "', LastCom=getdate()" & _
+    "', IPAddress='" & strIP & _
+    "', NetDriver='" & strNetDriver & _
+    "', LastMachineCom=getdate()" & _
     " WHERE SerialNumber='" & strSN & "'"
 set objConn=createobject("ADODB.Connection")
 objConn.open strConn2
-objConn.execute strSql
+objConn.execute strSqlMachine
 objConn.close
