@@ -1,6 +1,9 @@
 'on error resume next
 strShortComputer="."
 
+'set objSWbemLocator=createobject("WbemScripting.SWbemLocator")
+'set objSWbemServices=objSWbemLocator.connectserver(strShortComputer,"root\cimv2","username","password")
+
 set objSWbemServices=getobject("winmgmts:\\"&strShortComputer&"\root\cimv2")
 
 set objSystem=objSWbemServices.instancesof("win32_computersystem")
