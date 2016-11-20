@@ -1,9 +1,9 @@
 'on error resume next
 strShortComputer="."
 
-set objWMISVC=getobject("winmgmts:\\"&strShortComputer&"\root\cimv2")
+set objSWbemServices=getobject("winmgmts:\\"&strShortComputer&"\root\cimv2")
 
-set objSystem=objWMISVC.instancesof("win32_computersystem")
+set objSystem=objSWbemServices.instancesof("win32_computersystem")
 For Each objSystem0 In objSystem
     strComputer=strComputer & objSystem0.dnshostname & ";"
     strDomain=strDomain & objSystem0.domain & ";"
@@ -12,14 +12,14 @@ For Each objSystem0 In objSystem
 Next
 wscript.echo strComputer,strDomain,strModel,strMem
 
-set objProd=objWMISVC.instancesof("win32_computersystemproduct")
+set objProd=objSWbemServices.instancesof("win32_computersystemproduct")
 For Each objProd0 In objProd
     strSN=strSN & objProd0.identifyingnumber & ";"
     strUUID=strUUID & objProd0.uuid & ";"
 Next
 wscript.echo strSN,strUUID
 
-set objNet=objWMISVC.instancesof("win32_networkadapterconfiguration")
+set objNet=objSWbemServices.instancesof("win32_networkadapterconfiguration")
 For Each objNet0 In objNet
     if objNet0.ipenabled then
         strMac=strMac & objNet0.macaddress & ";"

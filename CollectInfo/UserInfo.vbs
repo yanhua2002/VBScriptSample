@@ -1,9 +1,9 @@
 'on error resume next
 strShortComputer="."
 
-set objWMISVC=getobject("winmgmts:\\"&strShortComputer&"\root\cimv2")
+set objSWbemServices=getobject("winmgmts:\\"&strShortComputer&"\root\cimv2")
 
-set objProd=objWMISVC.instancesof("win32_computersystemproduct")
+set objProd=objSWbemServices.instancesof("win32_computersystemproduct")
 For Each objProd0 In objProd
     strSN=strSN & objProd0.identifyingnumber & ";"
 Next
