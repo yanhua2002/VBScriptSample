@@ -37,10 +37,11 @@ Import-Csv -Path .\Computers.csv | ForEach-Object -Process {
 do {
     $done=$true
     foreach ($handle in $handles) {
-        if ($handle -ne $null) {
-            if ($handle.Result.IsComleted) {
+        if ($handle.Result -ne $null) {
+            if ($handle.Result.IsCompleted) {
                 $endResult=$handle.Thread.EndInvoke($handle.Result)
-                Write-Host $endResult.SystemName,`t,$endResult.LoadPercentage,`t,$endResult.Name
+                #Write-Host $endResult.SystemName,`t,$endResult.LoadPercentage,`t,$endResult.Name
+                $endResult
                 $handle.Thread.Dispose()
                 $handle.Result=$null
                 $handle=$null
